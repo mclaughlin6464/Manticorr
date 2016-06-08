@@ -11,7 +11,7 @@ from argparse import ArgumentParser
 from glob import glob
 import numpy as np
 #import Corrfunc
-from .readGadgetSnapshot import *
+from readGadgetSnapshot import *#TODO fix relative imports
 
 desc = '''Main file for this module.
 Takes the gadget base as input and an output name.
@@ -28,7 +28,7 @@ parser.add_argument('outputfile', type=str, help= \
 
 #TODO find a good value for p
 p0 = 1e-3
-parser.add_argument('-p', '--sample_frac', default = p0,type = float, help='Fraction to sample. Default is %d.'%p0)
+parser.add_argument('-p', '--sample_frac', default = p0,type = float, help='Fraction to sample. Default is %f.'%p0)
 
 args = vars(parser.parse_args())
 
@@ -36,9 +36,14 @@ inbase = args['inbase']
 outputfile= args['outputfile']
 p = args['sample_frac']
 
-assert os.path.exists(inbase+ '.0')#check that the path is valid
-assert os.path.exists(outputfile) or os.access(os.path.dirname(outputfile), os.W_OK) #check if it exists or we have access
-assert 0 < p < 1 #p must be a valid fraction!
+assert os.path.exists(inbase+ '.0'), "%s is not a valid path!"%(inbase+'.0') #check that the path is valid
+assert 0 < p < 1 , "%f is not a valid fraction between 0 and 1"%p #p must be a valid fraction!
+
+#check we can write to the outputfile
+try:
+    open(outputfile, 'w')
+except OSError:
+    raise IOError('Outputfile %s is not writable!'%outputfile)
 
 all_pos = np.array([])
 
