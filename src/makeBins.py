@@ -27,7 +27,7 @@ assert nbins > 0
 
 bins = np.logspace(rmin, rmax, nbins)
 
-with open('./binfile') as f:
+with open('./binfile', 'w') as f:
     for low, high in zip(bins[:-1], bins[1:]):
-        f.write('\t%f\t%f'%(low,high))
+        f.write('\t%f\t%f\n'%(low,high))
 
