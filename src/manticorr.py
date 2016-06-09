@@ -43,7 +43,7 @@ outputfile= args['outputfile']
 p = args['sample_frac']
 num_cores = args['num_cores']
 
-BIN_FILE = './binfile'#location of files with bin edges
+BINFILE = './binfile'#location of files with bin edges
 #no clue why I can't just make these there!
 
 assert os.path.exists(inbase+ '.0'), "%s is not a valid path!"%(inbase+'.0') #check that the path is valid
@@ -72,4 +72,12 @@ for file in glob(inbase+'*'):
     all_pos = np.resize(all_pos, (all_pos.shape[0]+pos.shape[0], 3))
     all_pos[-pos.shape[0]:, :] = pos
 
-xi = countpairs_xi(header.BoxSize, num_cores, binfile, pos[:,0], pos[:,1], pos[:,2])
+xi = countpairs_xi(header.BoxSize, num_cores, BINFILE, pos[:,0], pos[:,1], pos[:,2])
+
+bin_centers = np.zeros(xi.shape)
+with open(BINFILE, 'r') as f:
+    for i, line in enumerate(f):
+        splitline = line.split()
+        bin_centers[i] = (float(splitline[0]) +float(splitline[1]) )/2
+
+np.savetxt(outputfile, np.stack(bin_centers, xi), delimiter= ',' )
