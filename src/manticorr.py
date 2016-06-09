@@ -73,6 +73,7 @@ for file in glob(inbase+'*'):
     all_pos = np.resize(all_pos, (all_pos.shape[0]+pos.shape[0], 3))
     all_pos[-pos.shape[0]:, :] = pos
 
+#all pos have been collected. now run corrFunc.
 xi = countpairs_xi(header.BoxSize, num_cores, BINFILE, pos[:,0], pos[:,1], pos[:,2])
 
 bin_centers = np.zeros(xi.shape)
