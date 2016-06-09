@@ -44,8 +44,9 @@ outputfile= args['outputfile']
 p = args['sample_frac']
 num_cores = args['num_cores']
 
-BINFILE = './binfile'#location of files with bin edges
-#no clue why I can't just make these there!
+#TODO make an absolute path?
+BINFILE = 'binfile'#location of files with bin edges
+#no clue why I can't just make these here!
 
 assert os.path.exists(inbase+ '.0'), "%s is not a valid path!"%(inbase+'.0') #check that the path is valid
 assert 0 < p < 1 , "%f is not a valid fraction between 0 and 1"%p #p must be a valid fraction!
