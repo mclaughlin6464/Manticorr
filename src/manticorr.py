@@ -54,6 +54,7 @@ for file in glob(inbase+'*'):
     all_pos[-pos.shape[0]:, :] = pos
     break
 
+print all_pos.shape
 print all_pos
 
 #all pos have been collected. now run corrFunc.
