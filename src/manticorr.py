@@ -1,3 +1,4 @@
+#!/u/ki/swmclau2/.conda/envs/hodemulator/bin/python
 '''
 Main file for this module.
 Takes the gadget base as input and an output name.
@@ -52,13 +53,16 @@ assert 0 < p < 1 , "%f is not a valid fraction between 0 and 1"%p #p must be a v
 assert num_cores > 0 #must be an int larger than 0.
 if num_cores > MAX_CPUS:
     warnings.warn("Input num_cores %d larger than Max %d; setting to Max."%(num_cores, MAX_CPUS))
-    num_cores = MAX_CPUS
+    #num_cores = MAX_CPUS
 
 #check we can write to the outputfile
 try:
     open(outputfile, 'w')
-except OSError:
+except IOError:
     raise IOError('Outputfile %s is not writable!'%outputfile)
+
+print outputfile
+print num_cores
 
 all_pos = np.array([])
 
@@ -71,6 +75,8 @@ for file in glob(inbase+'*'):
     #Numpy uses fortran ordering.
     pos = readGadgetSnapshot(file, read_pos=True)[1] #Think this returns some type of tuple; should check
     pos = pos[np.random.rand(pos.shape[0]) < p] #downsample
+    if pos.shape[0] == 0:
+        continue
     all_pos = np.resize(all_pos, (all_pos.shape[0]+pos.shape[0], 3))
     all_pos[-pos.shape[0]:, :] = pos
 
