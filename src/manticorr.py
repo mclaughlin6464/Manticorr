@@ -44,7 +44,6 @@ outputfile= args['outputfile']
 p = args['sample_frac']
 num_cores = args['num_cores']
 
-#TODO make an absolute path?
 BINFILE = path.join(path.dirname(path.abspath(__file__)), "binfile")#location of files with bin edges
 #no clue why I can't just make these here!
 
@@ -82,6 +81,7 @@ for file in glob(inbase+'*'):
 
 #all pos have been collected. now run corrFunc.
 xi = countpairs_xi(header.BoxSize, num_cores, BINFILE, pos[:,0], pos[:,1], pos[:,2])
+print type(xi), len(xi)
 
 bin_centers = np.zeros(xi.shape)
 with open(BINFILE, 'r') as f:
