@@ -66,6 +66,7 @@ print num_cores
 all_pos = np.array([])
 
 header = readGadgetSnapshot(inbase+'.0')
+print header
 
 #TODO pos may need some h's!
 #TODO should fail gracefully if memory is exceeded or if p is too small.
@@ -79,15 +80,20 @@ for file in glob(inbase+'*'):
     all_pos = np.resize(all_pos, (all_pos.shape[0]+pos.shape[0], 3))
     all_pos[-pos.shape[0]:, :] = pos
 
+print all_pos.max(), all_pos.min(), all_pos.mean()
+
 #all pos have been collected. now run corrFunc.
 xi = countpairs_xi(header.BoxSize, num_cores, BINFILE, pos[:,0], pos[:,1], pos[:,2])
-print type(xi), len(xi)
+xi = np.array(xi)#[:, 4] #returns radius info as well, could avoid reading the BINFILE if I wanted.
 
+'''
 bin_centers = np.zeros(xi.shape)
 with open(BINFILE, 'r') as f:
     for i, line in enumerate(f):
         splitline = line.split()
         bin_centers[i] = (float(splitline[0]) +float(splitline[1]) )/2
+'''
 
 #TODO Make this append after writing a header!
-np.savetxt(outputfile, np.stack(bin_centers, xi), delimiter= ',' )
+#out = np.stack((bin_centers, xi)) 
+np.savetxt(outputfile, xi, delimiter= ',' )
