@@ -7,7 +7,7 @@ Downsamples the particles randomly by a certain fraction.
 '''
 
 #TODO wrap this in a main()
-import os
+from os import path
 from argparse import ArgumentParser
 import warnings
 from glob import glob
@@ -44,10 +44,10 @@ p = args['sample_frac']
 num_cores = args['num_cores']
 
 #TODO make an absolute path?
-BINFILE = 'binfile'#location of files with bin edges
+BINFILE = path.join(path.dirname(path.abspath(__file__)), "binfile")#location of files with bin edges
 #no clue why I can't just make these here!
 
-assert os.path.exists(inbase+ '.0'), "%s is not a valid path!"%(inbase+'.0') #check that the path is valid
+assert path.exists(inbase+ '.0'), "%s is not a valid path!"%(inbase+'.0') #check that the path is valid
 assert 0 < p < 1 , "%f is not a valid fraction between 0 and 1"%p #p must be a valid fraction!
 assert num_cores > 0 #must be an int larger than 0.
 if num_cores > MAX_CPUS:
@@ -65,6 +65,7 @@ all_pos = np.array([])
 header = readGadgetSnapshot(inbase+'.0')
 
 #TODO pos may need some h's!
+#TODO should fail gracefully if memory is exceeded or if p is too small.
 for file in glob(inbase+'*'):
     #TODO should find out which is "fast" axis and use that.
     #Numpy uses fortran ordering.
@@ -82,4 +83,5 @@ with open(BINFILE, 'r') as f:
         splitline = line.split()
         bin_centers[i] = (float(splitline[0]) +float(splitline[1]) )/2
 
+#TODO Make this append after writing a header!
 np.savetxt(outputfile, np.stack(bin_centers, xi), delimiter= ',' )
