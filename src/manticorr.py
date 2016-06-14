@@ -15,6 +15,7 @@ from glob import glob
 from multiprocessing import cpu_count
 import numpy as np
 from Corrfunc._countpairs import countpairs_xi
+from halotools.mock_observables import return_xyz_formatted_array,tpcf
 from readGadgetSnapshot import *#TODO fix relative imports
 
 desc = '''Main file for this module.
@@ -79,17 +80,8 @@ for file in glob(inbase+'*'):
     all_pos[-pos.shape[0]:, :] = pos
 
 all_pos*=h
-#all pos have been collected. now run corrFunc.
 xi = countpairs_xi(header.BoxSize*h, num_cores, BINFILE, all_pos[:,0], all_pos[:,1], all_pos[:,2])
 xi = np.array(xi)#[:, 4] #returns radius info as well, could avoid reading the BINFILE if I wanted.
-
-'''
-bin_centers = np.zeros(xi.shape)
-with open(BINFILE, 'r') as f:
-    for i, line in enumerate(f):
-        splitline = line.split()
-        bin_centers[i] = (float(splitline[0]) +float(splitline[1]) )/2
-'''
 
 #TODO Make this append after writing a header!
 #out = np.stack((bin_centers, xi)) 
