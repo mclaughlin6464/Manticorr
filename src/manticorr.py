@@ -60,15 +60,12 @@ try:
 except IOError:
     raise IOError('Outputfile %s is not writable!'%outputfile)
 
-print outputfile
-print num_cores
-
-all_pos = np.array([])
+all_pos = np.array([], dtype = 'float32')
 
 header = readGadgetSnapshot(inbase+'.0')
 print header
 
-#TODO pos may need some h's!
+h = header.HubbleParam 
 #TODO should fail gracefully if memory is exceeded or if p is too small.
 for file in glob(inbase+'*'):
     #TODO should find out which is "fast" axis and use that.
@@ -77,13 +74,13 @@ for file in glob(inbase+'*'):
     pos = pos[np.random.rand(pos.shape[0]) < p] #downsample
     if pos.shape[0] == 0:
         continue
+
     all_pos = np.resize(all_pos, (all_pos.shape[0]+pos.shape[0], 3))
     all_pos[-pos.shape[0]:, :] = pos
 
-print all_pos.max(), all_pos.min(), all_pos.mean()
-
+all_pos*=h
 #all pos have been collected. now run corrFunc.
-xi = countpairs_xi(header.BoxSize, num_cores, BINFILE, pos[:,0], pos[:,1], pos[:,2])
+xi = countpairs_xi(header.BoxSize*h, num_cores, BINFILE, all_pos[:,0], all_pos[:,1], all_pos[:,2])
 xi = np.array(xi)#[:, 4] #returns radius info as well, could avoid reading the BINFILE if I wanted.
 
 '''
